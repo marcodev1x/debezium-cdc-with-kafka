@@ -1,0 +1,23 @@
+{
+  "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+  "plugin.name": "pgoutput",
+  "database.hostname": "postgres",
+  "database.port": "5432",
+  "database.user": "user",
+  "database.password": "password",
+  "database.dbname": "dbname",
+  "topic.prefix": "app",
+  "slot.name": "users_outbox_slot",
+  "publication.name": "users_outbox_publication",
+  "publication.autocreate.mode": "filtered",
+  "table.include.list": "public.users_outboxes",
+  "snapshot.mode": "no_data",
+  "tombstones.on.delete": "false",
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": "false",
+  "transforms": "outbox",
+  "transforms.outbox.type": "io.debezium.transforms.outbox.EventRouter",
+  "transforms.outbox.table.expand.json.payload": "true",
+  "transforms.outbox.table.fields.additional.placement": "type:header:eventType"
+}

@@ -24,7 +24,7 @@ type Subscriber struct {
 type Endpoints map[string]EventConstructor
 
 type EventConstructor struct {
-	Read     func(ctx context.Context, msg kafka.Message) (kafka.Message, error)
+	Read     func(ctx context.Context, msg kafka.Message) (any, error)
 	Threads  int
 	Provider func(ctx context.Context, msg any) (interface{}, error)
 	Retries  int
@@ -67,10 +67,11 @@ func NewSubscriber(brokers []string, group string, eps Endpoints) *Subscriber {
 
 	for topic := range eps {
 		sbs.readers[topic] = kafka.NewReader(kafka.ReaderConfig{
-			Brokers: brokers,
-			GroupID: group,
-			Topic:   topic,
-			Logger:  kafka.LoggerFunc(log.Printf),
+			Brokers:               brokers,
+			GroupID:               group,
+			Topic:                 topic,
+			WatchPartitionChanges: true,
+			Logger:                kafka.LoggerFunc(log.Printf),
 		})
 	}
 
